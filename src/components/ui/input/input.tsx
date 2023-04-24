@@ -14,6 +14,7 @@ export const Input: React.FC<InputProps> = ({
   maxLength,
   max,
   isLimitText = false,
+  onChange,
   ...rest
 }) => {
   const limitText =
@@ -29,6 +30,7 @@ export const Input: React.FC<InputProps> = ({
         type={type}
         maxLength={maxLength}
         max={max}
+        onChange={onChange}
         {...rest}
       />
       {isLimitText && (
