@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./queue.module.css";
 import { Button } from "../ui/button/button";
@@ -6,95 +6,121 @@ import { Input } from "../ui/input/input";
 import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import { enqueue, dequeue, clearQueue } from "../../utils/queue-utils";
+import { IArrEl } from "../../utils/utils";
 
 export const QueuePage: React.FC = () => {
   const [value, setValue] = useState<string>("");
-  const [isLoader, setIsLoader] = useState<boolean>(false);
+  const [isLoaderEnqueue, setIsLoaderEnqueue] = useState(false);
+  const [isLoaderDequeue, setIsLoaderDequeue] = useState(false);
+  const [isLoaderClear, setIsLoaderClear] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [isDisabledEnqueue, setIsDisabledEnqueue] = useState(true)
+  const [isDisabledDequeue, setIsDisabledDequeue] = useState(true)
+  const [isDisabledClear, setIsDisabledClear] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [queue, setQueue] = useState<string[]>([]);
   const [tail, setTail] = useState(-1);
-  const [head, setHead] = useState(0);
-  const emptyElement = "";
-  const emptyArray: string[] = Array.apply(null, Array(7)).map(
+  const [head, setHead] = useState(-1);
+
+  //начальный массив пустых элементов
+  const emptyElement: IArrEl = {number: '', state: ElementStates.Default};
+  const emptyArray: IArrEl[] = Array.apply(null, Array(7)).map(
     () => emptyElement
   );
   const maxLength = 7;
+  const [array, setArray] = useState<IArrEl[]>(emptyArray);
 
+
+  //пропсы добавление
   const enqueProps = {
     value,
-    queue,
+    array,
     tail,
     currentIndex,
-    setIsLoader,
+    setArray,
+    setIsDisabled,
+    setIsDisabledDequeue,
+    setIsLoaderEnqueue,
+    setIsDisabledClear,
     setTail,
+    setHead,
     setCurrentIndex,
     setValue,
     maxLength,
   };
 
+  //пропсы удаление
   const dequeueProps = {
-    queue,
+    array,
     head,
-    setIsLoader,
+    setIsDisabled,
+    setIsDisabledClear,
+    setIsLoaderDequeue,
+    setIsDisabledDequeue,
+    setArray,
+    setTail,
     setHead,
+    setCurrentIndex,
     emptyElement,
-    maxLength,
   };
 
+  //пропсы очистить
   const clearQueueProps = {
-    setIsLoader,
-    setQueue,
+    setIsDisabled,
+    setIsDisabledClear,
+    setIsLoaderClear,
+    setIsDisabledDequeue,
+    setArray,
     setTail,
     setCurrentIndex,
     setHead,
     emptyArray,
   };
 
-  useEffect(() => {
-    setQueue(emptyArray);
-  }, []);
-
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-  };
+  const onChange =(e: React.FormEvent<HTMLInputElement>)=> {
+    setValue(e.currentTarget.value)
+    setIsDisabledEnqueue(false)
+  }
 
   return (
     <SolutionLayout title="Очередь">
       <div className={styles.container}>
         <div className={styles.input}>
-          <Input onChange={onChange} value={value} maxLength={4} />
+          <Input
+            onChange={onChange}
+            value={value}
+            maxLength={4}
+            isLimitText={true}
+          />
           <Button
             text="Добавить"
-            isLoader={isLoader}
+            isLoader={isLoaderEnqueue}
             extraClass="mr-5"
             onClick={() => enqueue(enqueProps)}
-            disabled={queue.length > maxLength ? true : false}
+            disabled={tail === 7 || isDisabledEnqueue || !value ? true : false}
           />
           <Button
             text="Удалить"
-            isLoader={isLoader}
+            isLoader={isLoaderDequeue}
             extraClass="mr-20"
             onClick={() => dequeue(dequeueProps)}
+            disabled={head > tail || isDisabledDequeue ? true : false}
           />
           <Button
             text="Очистить"
-            isLoader={isLoader}
+            isLoader={isLoaderClear}
             onClick={() => clearQueue(clearQueueProps)}
+            disabled={isDisabledClear}
           />
         </div>
         <div>
           <div className={styles.result}>
-            {queue.map((item, index) => (
+            {array.map((item: IArrEl, index) => (
               <Circle
-                letter={item}
+                letter={String(item.number)}
                 key={index}
                 index={index}
                 extraClass={styles.item}
-                state={
-                  tail === index
-                    ? ElementStates.Changing
-                    : ElementStates.Default
-                }
+                state={item.state}
                 head={head === index ? "head" : null}
                 tail={tail === index ? "tail" : null}
               />

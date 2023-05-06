@@ -43,11 +43,17 @@ export const StringComponent: React.FC = () => {
     <SolutionLayout title="Строка">
       <div className={styles.container}>
         <div className={styles.input}>
-          <Input onChange={onChange} />
+          <Input
+            onChange={onChange}
+            type="text"
+            maxLength={11}
+            isLimitText={true}
+          />
           <Button
             text="Развернуть"
             onClick={() => reverse(value)}
             isLoader={isLoader}
+            disabled={value ? false : true}
           />
         </div>
         <div>

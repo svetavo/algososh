@@ -7,7 +7,7 @@ import { Circle } from "../ui/circle/circle";
 import { fibonacci } from "../../utils/fibonacci-utils";
 
 export const FibonacciPage: React.FC = () => {
-  const [value, setValue] = useState<any>();
+  const [value, setValue] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
   const [result, setResult] = useState<null | any[]>(null);
   const [isLoader, setIsLoader] = useState<boolean>(false);
@@ -16,8 +16,8 @@ export const FibonacciPage: React.FC = () => {
     setValue(e.target.value);
   };
 
-  const onClick = (value: number) => {
-    const props = {value, setResult, setIsLoader, setValue}
+  const onClick = (value: string) => {
+    const props = { value, setResult, setIsLoader, setValue };
     setResult(null);
     setIsLoader(true);
     fibonacci(props);
@@ -28,11 +28,20 @@ export const FibonacciPage: React.FC = () => {
     <SolutionLayout title="Последовательность Фибоначчи">
       <div className={styles.container}>
         <div className={styles.input}>
-          <Input onChange={onChange} type="text" value={value} />
+          <Input
+            onChange={onChange}
+            type="number"
+            value={value}
+            placeholder="Введите число"
+            max={19}
+            isLimitText={true}
+
+          />
           <Button
             text="Рассчитать"
             onClick={() => onClick(value)}
             isLoader={isLoader}
+            disabled={value ? false : true}
           />
         </div>
         <div>
@@ -44,6 +53,7 @@ export const FibonacciPage: React.FC = () => {
                       letter={item}
                       key={index}
                       extraClass={styles.item}
+                      index={index}
                     />
                   ))
                 : null}

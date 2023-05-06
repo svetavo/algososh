@@ -4,112 +4,103 @@ import { RadioInput } from "../ui/radio-input/radio-input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./sorting.module.css";
 import { swap, delay } from "../../utils/utils";
-import { UP, DOWN } from "../../constants/directions";
 import { Column } from "../ui/column/column";
 import { Direction } from "../../types/direction";
+import { randomArr } from "../../utils/utils";
+import { ElementStates } from "../../types/element-states";
+import { IArrEl } from "../../utils/utils";
 
 export const SortingPage: React.FC = (): JSX.Element => {
   const [method, setMethod] = useState("selection");
-  const [array, setArray] = useState<number[]>([]);
-  const [isCheckedSel, setIsCheckedSel] = useState(false);
-  const [isCheckedBub, setIsCheckedBub] = useState(false);
-  const [isLoader, setIsLoader] = useState(false);
+  const [array, setArray] = useState<IArrEl[]>([]);
+  const [ascendingLoader, setAscendingLoader] = useState(false);
+  const [descendingLoader, setDescendingLoader] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
-    setArray(randomArr());
+    setArray(randomArr({ setArray, numbers: undefined }));
   }, []);
 
-  //random count
-  const getRandomInt = (min: number, max: number): number => {
-    return Math.floor(Math.random() * (max - min)) + min;
+  const loaderSet = (direction: string) => {
+    direction === Direction.Ascending
+      ? setAscendingLoader(true)
+      : setDescendingLoader(true);
   };
 
-  //random array
-  const randomArr = () => {
-    const array = [];
-    const max = 100;
-    const count: number = getRandomInt(3, 17);
-    while (array.length < count) {
-      const r: number = Math.floor(Math.random() * max);
-      if (array.indexOf(r) === -1) {
-        array.push(r);
-      }
-    }
-    setArray(array);
-    return array;
+  const loaderOff = (direction: string) => {
+    direction === Direction.Ascending
+      ? setAscendingLoader(false)
+      : setDescendingLoader(false);
   };
 
   // пузырек
-  const bubbleSort = async (arr: number[], direction: string) => {
-    setIsLoader(true);
+  const bubbleSort = async (direction: string) => {
+    loaderSet(direction);
     setIsDisabled(true);
-    for (let j = arr.length - 1; j > 0; j--) {
+    for (let j = array.length - 1; j > 0; j--) {
       for (let i = 0; i < j; i++) {
         if (
           direction === Direction.Ascending
-            ? arr[i] > arr[i + 1]
-            : arr[i] < arr[i + 1]
+            ? array[i].number > array[i + 1].number
+            : array[i].number < array[i + 1].number
         ) {
-          swap(arr, i, i + 1);
+          array[i].state = ElementStates.Changing;
+          array[i + 1].state = ElementStates.Changing;
+          swap(array, i, i + 1);
           await delay(1000);
-          setArray([...arr]);
+          setArray([...array]);
+          array[i].state = ElementStates.Default;
+          array[i + 1].state = ElementStates.Default;
         }
       }
     }
-    setIsLoader(false);
+    loaderOff(direction);
     setIsDisabled(false);
   };
 
   // выбор
-  const selectionSort = async (arr: number[], direction: string) => {
-    setIsLoader(true);
+  const selectionSort = async (direction: string) => {
+    loaderSet(direction);
     setIsDisabled(true);
-    for (let i = 0; i < arr.length - 1; i++) {
+    for (let i = 0; i < array.length - 1; i++) {
       if (direction === Direction.Descending) {
         let maxInd = i;
-        for (let j = i; j < arr.length; j++) {
-          if (arr[maxInd] < arr[j]) {
+
+        for (let j = i; j < array.length; j++) {
+          if (array[maxInd].number < array[j].number) {
             maxInd = j;
           }
         }
         if (i !== maxInd) {
-          swap(arr, i, maxInd);
+          array[i].state = ElementStates.Changing;
+          array[maxInd].state = ElementStates.Changing;
+
+          swap(array, i, maxInd);
           await delay(1000);
-          setArray([...arr]);
+          setArray([...array]);
+          array[i].state = ElementStates.Default;
+          array[maxInd].state = ElementStates.Default;
         }
       } else if (direction === Direction.Ascending) {
         let minInd = i;
-        for (let j = i; j < arr.length; j++) {
-          if (arr[minInd] > arr[j]) {
+        for (let j = i; j < array.length; j++) {
+          if (array[minInd].number > array[j].number) {
             minInd = j;
           }
         }
         if (i !== minInd) {
-          swap(arr, i, minInd);
+          array[i].state = ElementStates.Changing;
+          array[minInd].state = ElementStates.Changing;
+          swap(array, i, minInd);
           await delay(1000);
-          setArray([...arr]);
+          setArray([...array]);
+          array[i].state = ElementStates.Default;
+          array[minInd].state = ElementStates.Default;
         }
       }
     }
-    setIsLoader(false);
+    loaderOff(direction);
     setIsDisabled(false);
-  };
-
-  const radioClickBub = () => {
-    setIsCheckedBub(true);
-    setMethod("bubble");
-    setIsCheckedSel(false);
-  };
-
-  const radioClickSel = () => {
-    setIsCheckedSel(true);
-    setMethod("selection");
-    setIsCheckedBub(false);
-  };
-
-  const radioClick = (method: string) => {
-    method === "bubble" ? radioClickBub() : radioClickSel();
   };
 
   return (
@@ -119,50 +110,52 @@ export const SortingPage: React.FC = (): JSX.Element => {
           <div className={styles.navigation}>
             <RadioInput
               label="Выбор"
-              defaultChecked
+              defaultChecked={true}
               disabled={isDisabled}
               extraClass={styles.navigationItem}
-              onClick={() => radioClick("selection")}
-              checked={isCheckedSel}
+              onClick={() => setMethod("selection")}
+              checked={method === "selection" ? true : false}
             />
             <RadioInput
               label="Пузырёк"
               disabled={isDisabled}
               extraClass={styles.navigationItem}
-              onClick={() => radioClick("bubble")}
-              checked={isCheckedBub}
+              onClick={() => setMethod("bubble")}
+              checked={method === "bubble" ? true : false}
             />
             <Button
               text="По возрастанию"
-              isLoader={isLoader}
+              disabled={isDisabled}
+              isLoader={ascendingLoader}
               extraClass={styles.navigationItem}
               onClick={
                 method === "selection"
-                  ? () => selectionSort(array, Direction.Ascending)
-                  : () => bubbleSort(array, Direction.Ascending)
+                  ? () => selectionSort(Direction.Ascending)
+                  : () => bubbleSort(Direction.Ascending)
               }
             />
             <Button
               text="По убыванию"
               extraClass={styles.navigationItem}
-              isLoader={isLoader}
+              isLoader={descendingLoader}
+              disabled={isDisabled}
               onClick={
                 method === "selection"
-                  ? () => selectionSort(array, Direction.Descending)
-                  : () => bubbleSort(array, Direction.Descending)
+                  ? () => selectionSort(Direction.Descending)
+                  : () => bubbleSort(Direction.Descending)
               }
             />
           </div>
           <Button
             text="Новый массив"
-            isLoader={isLoader}
-            onClick={() => randomArr()}
+            disabled={isDisabled}
+            onClick={() => randomArr({ setArray })}
           />
         </div>
         <div className={styles.result}>
-          {array.map((el, index) => (
+          {array.map((el: IArrEl, index) => (
             <div key={index} className={styles.resultItem}>
-              <Column index={el} />
+              <Column index={Number(el.number)} state={el.state} />
             </div>
           ))}
         </div>

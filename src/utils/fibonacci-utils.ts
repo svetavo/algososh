@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 interface IProps {
-  value: number;
+  value: string;
   setResult: Dispatcher<number[] | null>;
   setIsLoader: Dispatcher<boolean>;
   setValue: Dispatcher<string>;
@@ -16,9 +16,10 @@ export const fibonacci = async ({
   setIsLoader,
   setValue,
 }: IProps)  => {
-  if (value >= 1 && value <= 19) {
+  const valueNum = Number(value)
+  if (valueNum >= 1 && valueNum <= 19) {
     let arr = [0, 1];
-    for (let i = 2; i <= value; i++) {
+    for (let i = 2; i <= valueNum; i++) {
       arr[i] = arr[i - 2] + arr[i - 1];
       await delay(500);
       setResult(arr.slice(0, i + 1));

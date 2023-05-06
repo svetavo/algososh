@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./stack.module.css";
 import { Button } from "../ui/button/button";
@@ -6,82 +6,82 @@ import { Input } from "../ui/input/input";
 import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import { pushStack, popStack, clearStack } from "../../utils/stack-utils";
+import { stack } from "./Stack";
+import { IArrEl } from "../../utils/utils";
 
 export const StackPage: React.FC = () => {
-  const [value, setValue] = useState("");
-  const [isLoader, setIsLoader] = useState<boolean>(false);
+  const [value, setValue] = useState<string>('');
+  const [isDisabled, setIsDisabled] = useState(false)
+  const [isLoaderAdd, setIsLoaderAdd] = useState(false);
+  const [isLoaderRemove, setIsLoaderRemove] = useState(false);
+  const [isLoaderClear, setIsLoaderClear] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(-1);
-  const [stack, setStack] = useState<string[]>([]);
+  const [array, setArray] = useState<IArrEl[]>([]);
   const pushProps = {
     value,
-    stack,
-    setIsLoader,
-    setStack,
+    setIsDisabled,
+    setIsLoaderAdd,
+    setArray,
     setCurrentIndex,
     currentIndex,
     setValue,
   };
   const popProps = {
-    stack,
-    setIsLoader,
-    setStack,
+    setIsDisabled,
+    setIsLoaderRemove,
+    setArray,
     setCurrentIndex,
     currentIndex,
   };
   const clearProps = {
-    stack,
-    setIsLoader,
-    setStack,
+    setIsDisabled,
+    setIsLoaderClear,
+    setArray,
   };
-
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-  };
-
-  const onAdd = () => {
-    value ? pushStack(pushProps) : alert("Введите значение в инпут");
-  };
-
-  const onDelete = () => {
-    stack.length ? popStack(popProps) : alert("стек пуст");
-  };
-
-  const onClear = () => {
-    stack.length ? clearStack(clearProps) : alert("стек пуст");
-  };
-
 
   return (
     <SolutionLayout title="Стек">
       <div className={styles.container}>
         <div className={styles.input}>
-          <Input onChange={onChange} value={value} maxLength={4} />
+          <Input
+            onChange={(e) => setValue(e.currentTarget.value)}
+            value={value}
+            maxLength={4}
+            isLimitText={true}
+          />
           <Button
             text="Добавить"
-            isLoader={isLoader}
+            isLoader={isLoaderAdd}
             extraClass="mr-5"
-            onClick={onAdd}
+            onClick={() => pushStack(pushProps)}
+            disabled={!value || stack.isFull() || isDisabled ? true : false}
           />
           <Button
             text="Удалить"
-            isLoader={isLoader}
+            isLoader={isLoaderRemove}
             extraClass="mr-20"
-            onClick={onDelete}
+            onClick={() => popStack(popProps)}
+            disabled={!array.length || isDisabled ?true : false}
           />
-          <Button text="Очистить" isLoader={isLoader} onClick={onClear} />
+          <Button
+            text="Очистить"
+            isLoader={isLoaderClear}
+            onClick={() => clearStack(clearProps)}
+            disabled={!array.length || isDisabled ? true : false}
+          />
         </div>
         <div>
           <div className={styles.result}>
-            {stack?.map((item, index) => (
+            {array?.map((item: IArrEl, index) => (
               <Circle
-                letter={item}
+                letter={String(item.number)}
                 key={index}
                 index={index}
                 extraClass={styles.item}
-                state={
-                  currentIndex === index
-                    ? ElementStates.Changing
-                    : ElementStates.Default
+                state={item.state
+                  // currentIndex === index
+                  //   ? ElementStates.Changing
+                  //   : ElementStates.Default
                 }
                 head={currentIndex === index ? "top" : null}
               />

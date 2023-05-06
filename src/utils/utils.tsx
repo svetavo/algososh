@@ -1,3 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
+import { ElementStates } from "../types/element-states";
+
 export const delay = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
@@ -8,18 +11,34 @@ export const swap = (arr: any[], a: number, b: number): void => {
   arr[b] = temp;
 };
 
+type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
-  //random array
-export const randomArr = () => {
-    const array = [];
-    const max = 100;
-    while (array.length < 4) {
-      const r: number = Math.floor(Math.random() * max);
-      if (array.indexOf(r) === -1) {
-        array.push(r);
-      }
-    }
-    const newArr: string[] = array.join().split(",");
-    // setList(newArr);
-    return newArr;
-  };
+interface IProps<T> {
+  setArray: Dispatcher<T[]>;
+  numbers?: number | undefined
+}
+
+//random array
+export const randomArr = ({ setArray, numbers }: IProps<IArrEl>) => {
+  const array = [];
+  const max = 100;
+  const count = numbers !== undefined ? numbers : getRandomInt(3, 17)
+  // const count: number = getRandomInt(3, 17);
+  while (array.length < count) {
+    array.push({
+      number: Math.floor(Math.random() * max),
+      state: ElementStates.Default,
+    });
+  }
+  setArray(array);
+  return array;
+};
+
+const getRandomInt = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min)) + min;
+};
+
+export interface IArrEl {
+  number: number | string;
+  state: ElementStates;
+}
