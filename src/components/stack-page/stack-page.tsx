@@ -4,39 +4,39 @@ import styles from "./stack.module.css";
 import { Button } from "../ui/button/button";
 import { Input } from "../ui/input/input";
 import { Circle } from "../ui/circle/circle";
-import { ElementStates } from "../../types/element-states";
 import { pushStack, popStack, clearStack } from "../../utils/stack-utils";
 import { stack } from "./Stack";
 import { IArrEl } from "../../utils/utils";
 
 export const StackPage: React.FC = () => {
-  const [value, setValue] = useState<string>('');
-  const [isDisabled, setIsDisabled] = useState(false)
+  const [value, setValue] = useState<string>("");
+  const [isDisabled, setIsDisabled] = useState(false);
   const [isLoaderAdd, setIsLoaderAdd] = useState(false);
   const [isLoaderRemove, setIsLoaderRemove] = useState(false);
   const [isLoaderClear, setIsLoaderClear] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(-1);
   const [array, setArray] = useState<IArrEl[]>([]);
+  const [top, setTop] = useState(0);
   const pushProps = {
     value,
     setIsDisabled,
     setIsLoaderAdd,
     setArray,
-    setCurrentIndex,
-    currentIndex,
     setValue,
+    setTop,
   };
   const popProps = {
     setIsDisabled,
     setIsLoaderRemove,
     setArray,
-    setCurrentIndex,
-    currentIndex,
+    setTop,
+    setValue,
   };
   const clearProps = {
     setIsDisabled,
     setIsLoaderClear,
     setArray,
+    setTop,
+    setValue,
   };
 
   return (
@@ -61,7 +61,7 @@ export const StackPage: React.FC = () => {
             isLoader={isLoaderRemove}
             extraClass="mr-20"
             onClick={() => popStack(popProps)}
-            disabled={!array.length || isDisabled ?true : false}
+            disabled={!array.length || isDisabled ? true : false}
           />
           <Button
             text="Очистить"
@@ -78,12 +78,8 @@ export const StackPage: React.FC = () => {
                 key={index}
                 index={index}
                 extraClass={styles.item}
-                state={item.state
-                  // currentIndex === index
-                  //   ? ElementStates.Changing
-                  //   : ElementStates.Default
-                }
-                head={currentIndex === index ? "top" : null}
+                state={item.state}
+                head={index === top ? "top" : null}
               />
             ))}
           </div>

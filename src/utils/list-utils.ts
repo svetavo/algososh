@@ -8,22 +8,27 @@ type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 interface IProps<T> {
   array?: T[];
-  value?: number;
-  index?: number;
+  value?: string;
+  index?: string;
   setArray: Dispatcher<T[]>;
-  setValue?: Dispatcher<number | undefined>;
-  setIndex?: Dispatcher<number | undefined>;
+  setValue?: Dispatcher<string>;
+  setIndex?: Dispatcher<string>;
   setHead: Dispatcher<number>;
-  setIsLoader: Dispatcher<boolean>;
   setIsDisabled: Dispatcher<boolean>;
   setIsChanging?: Dispatcher<string>;
   setTail: Dispatcher<number>;
   setCurrentIndex?: Dispatcher<number>;
+  setIsLoaderAddInd?: Dispatcher<boolean>;
+  setIsLoaderRemoveInd?: Dispatcher<boolean>;
+  setIsLoaderRemoveHead?: Dispatcher<boolean>;
+  setIsLoaderRemoveTail?: Dispatcher<boolean>;
+  setIsLoaderAddHead?: Dispatcher<boolean>;
+  setIsLoaderAddTail?: Dispatcher<boolean>;
 }
 
 interface ISel<T> {
   array: T[] | undefined;
-  index: number | undefined;
+  index: string | undefined;
 }
 
 // добавить в head
@@ -31,14 +36,14 @@ export const addHead = async ({
   array,
   value,
   setValue,
-  setIsLoader,
   setIsDisabled,
   setHead,
   setTail,
   setArray,
   setIsChanging,
+  setIsLoaderAddHead,
 }: IProps<IArrEl>) => {
-  setIsLoader(true);
+  setIsLoaderAddHead!(true);
   setIsDisabled(true);
   setIsChanging!("headAdd");
   const newEl = { number: value, state: ElementStates.Default };
@@ -53,8 +58,8 @@ export const addHead = async ({
   setIsChanging!("");
   await delay(500);
   newEl.state = ElementStates.Default;
-  setValue!(undefined);
-  setIsLoader(false);
+  setValue!("");
+  setIsLoaderAddHead!(false);
   setIsDisabled(false);
 };
 
@@ -63,14 +68,14 @@ export const addTail = async ({
   array,
   value,
   setValue,
-  setIsLoader,
   setArray,
   setHead,
   setTail,
   setIsDisabled,
   setIsChanging,
+  setIsLoaderAddTail,
 }: IProps<IArrEl>) => {
-  setIsLoader(true);
+  setIsLoaderAddTail!(true);
   setIsDisabled(true);
   setIsChanging!("tailAdd");
   const newEl = { number: value, state: ElementStates.Default };
@@ -85,22 +90,22 @@ export const addTail = async ({
   setIsChanging!("");
   await delay(500);
   newEl.state = ElementStates.Default;
-  setValue!(undefined);
-  setIsLoader(false);
+  setValue!("");
+  setIsLoaderAddTail!(false);
   setIsDisabled(false);
 };
 
 // удалить из head
 export const removeHead = async ({
   array,
-  setIsLoader,
   setArray,
   setIsDisabled,
   setHead,
   setTail,
   setIsChanging,
+  setIsLoaderRemoveHead,
 }: IProps<IArrEl>) => {
-  setIsLoader(true);
+  setIsLoaderRemoveHead!(true);
   setIsDisabled(true);
   setIsChanging!("headRemove");
   await delay(500);
@@ -112,20 +117,20 @@ export const removeHead = async ({
   setIsChanging!("");
   await delay(500);
   setIsDisabled!(false);
-  setIsLoader!(false);
+  setIsLoaderRemoveHead!(false);
 };
 
 // удалить из tail
 export const removeTail = async ({
   array,
-  setIsLoader,
   setArray,
   setIsDisabled,
   setHead,
   setTail,
   setIsChanging,
+  setIsLoaderRemoveTail,
 }: IProps<IArrEl>) => {
-  setIsLoader(true);
+  setIsLoaderRemoveTail!(true);
   setIsDisabled(true);
   setIsChanging!("tailRemove");
   await delay(500);
@@ -137,7 +142,7 @@ export const removeTail = async ({
   setIsChanging!("");
   await delay(500);
   setIsDisabled(false);
-  setIsLoader(false);
+  setIsLoaderRemoveTail!(false);
 };
 
 //добавить по индексу
@@ -147,22 +152,23 @@ export const addIndex = async ({
   setValue,
   setIndex,
   index,
-  setIsLoader,
   setIsDisabled,
   setHead,
   setTail,
   setArray,
   setIsChanging,
   setCurrentIndex,
+  setIsLoaderAddInd,
 }: IProps<IArrEl>) => {
-  setIsLoader(true);
+  setIsLoaderAddInd!(true);
   setIsDisabled(true);
+  const indexNum = Number(index);
   setIsChanging!("indexAdd");
-  setCurrentIndex!(index!);
+  setCurrentIndex!(indexNum);
   const newEl = { number: value, state: ElementStates.Default };
   newEl.state = ElementStates.Changing;
   await delay(500);
-  list.addInd(index!, newEl!, array!);
+  list.addInd(indexNum, newEl!, array!);
   await delay(500);
   setArray(list.print());
   newEl.state = ElementStates.Modified;
@@ -171,17 +177,16 @@ export const addIndex = async ({
   setIsChanging!("");
   await delay(500);
   newEl.state = ElementStates.Default;
-  setValue!(undefined);
-  setIndex!(undefined)
+  setValue!("");
+  setIndex!("");
   setIsDisabled(false);
-  setIsLoader(false);
+  setIsLoaderAddInd!(false);
 };
 
 //удалить по индексу
 export const removeIndex = async ({
   array,
   index,
-  setIsLoader,
   setIsDisabled,
   setHead,
   setTail,
@@ -189,16 +194,19 @@ export const removeIndex = async ({
   setCurrentIndex,
   setIsChanging,
   setValue,
-  setIndex
+  setIndex,
+  setIsLoaderRemoveInd,
 }: IProps<IArrEl>) => {
-  setIsLoader(true);
+  setIsLoaderRemoveInd!(true);
   setIsDisabled(true);
+  const indexNum = Number(index);
   colorSelection({ array, index });
   await delay(1000);
-  setCurrentIndex!(index!);
+  setCurrentIndex!(indexNum);
   await delay(1000);
   setIsChanging!("indexRemove");
-  list.removeInd(index!, array!);
+  await delay(500);
+  list.removeInd(indexNum, array!);
   await delay(500);
   setArray(list.print());
   setHead(list.head);
@@ -207,14 +215,43 @@ export const removeIndex = async ({
   array?.forEach((el) => (el.state = ElementStates.Default));
   await delay(500);
   setIsDisabled(false);
-  setIsLoader(false);
-  setValue!(undefined);
-  setIndex!(undefined)
+  setIsLoaderRemoveInd!(false);
+  setValue!("");
+  setIndex!("");
 };
 
 const colorSelection = async ({ array, index }: ISel<IArrEl>) => {
-  for (let i = 0; i < index!; i++) {
+  const indexNum = Number(index);
+  for (let i = 0; i <= indexNum; i++) {
     array![i].state = ElementStates.Changing;
     await delay(1000);
+  }
+};
+
+interface ILetterChanger {
+  index: number;
+  item: IArrEl;
+  isChanging: string;
+  head: number;
+  tail: number;
+  currentIndex: number;
+}
+
+export const letterChanger = ({
+  index,
+  item,
+  isChanging,
+  head,
+  tail,
+  currentIndex,
+}: ILetterChanger) => {
+  if (isChanging === "headRemove" && index === head) {
+    return "";
+  } else if (isChanging === "tailRemove" && index === tail) {
+    return "";
+  } else if (isChanging === "indexRemove" && index === currentIndex) {
+    return "";
+  } else {
+    return String(item.number);
   }
 };

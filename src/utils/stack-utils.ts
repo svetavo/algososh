@@ -8,14 +8,13 @@ type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 interface IProps<T> {
   value?: string;
-  currentIndex?: number;
   setIsDisabled: Dispatcher<boolean>;
   setIsLoaderAdd?: Dispatcher<boolean>;
   setIsLoaderRemove?: Dispatcher<boolean>;
   setIsLoaderClear?: Dispatcher<boolean>;
   setValue?: Dispatcher<string>;
   setArray: Dispatcher<T[]>;
-  setCurrentIndex?: Dispatcher<number>;
+  setTop?: Dispatcher<number>
 }
 
 export const pushStack = async ({
@@ -23,16 +22,15 @@ export const pushStack = async ({
   setIsDisabled,
   setIsLoaderAdd,
   setArray,
-  setCurrentIndex,
-  currentIndex,
   setValue,
+  setTop
 }: IProps<IArrEl>) => {
   setIsLoaderAdd!(true);
   setIsDisabled(true);
   const newEl = { number: Number(value), state: ElementStates.Default };
   stack.push(newEl);
   setArray(stack.printStack());
-  setCurrentIndex!(currentIndex! + 1);
+  setTop!(stack.top)
   newEl.state = ElementStates.Changing;
   await delay(500);
   setValue!("");
@@ -45,28 +43,34 @@ export const popStack = async ({
   setIsDisabled,
   setIsLoaderRemove,
   setArray,
-  setCurrentIndex,
+  setTop,
+  setValue
 }: IProps<IArrEl>) => {
   setIsLoaderRemove!(true);
   setIsDisabled(true);
   await delay(500);
   stack.pop();
   setArray(stack.printStack());
-  setCurrentIndex!(stack.getSize() - 1);
+  setTop!(stack.top)
   setIsLoaderRemove!(false);
   setIsDisabled(false);
+  setValue!("");
 };
 
 export const clearStack = async ({
   setIsDisabled,
   setIsLoaderClear,
   setArray,
+  setTop,
+  setValue
 }: IProps<IArrEl>) => {
   setIsLoaderClear!(true);
   setIsDisabled(true);
   await delay(500);
   stack.clear();
   setArray(stack.printStack());
+  setTop!(stack.top)
   setIsLoaderClear!(false);
   setIsDisabled(false);
+  setValue!("");
 };

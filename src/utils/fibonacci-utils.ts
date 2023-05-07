@@ -18,10 +18,16 @@ export const fibonacci = async ({
 }: IProps)  => {
   const valueNum = Number(value)
   if (valueNum >= 1 && valueNum <= 19) {
-    let arr = [0, 1];
+    let arr: number[] = [0];
+    await delay(500);
+    setResult(arr)
+    await delay(500);
+    arr.push(1)
+    await delay(500);
+    setResult(arr)
     for (let i = 2; i <= valueNum; i++) {
-      arr[i] = arr[i - 2] + arr[i - 1];
       await delay(500);
+      arr[i] = arr[i - 2] + arr[i - 1];
       setResult(arr.slice(0, i + 1));
     }
     setIsLoader(false);

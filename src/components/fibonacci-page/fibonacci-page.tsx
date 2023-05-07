@@ -9,7 +9,7 @@ import { fibonacci } from "../../utils/fibonacci-utils";
 export const FibonacciPage: React.FC = () => {
   const [value, setValue] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
-  const [result, setResult] = useState<null | any[]>(null);
+  const [result, setResult] = useState<null | number[]>(null);
   const [isLoader, setIsLoader] = useState<boolean>(false);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -18,7 +18,6 @@ export const FibonacciPage: React.FC = () => {
 
   const onClick = (value: string) => {
     const props = { value, setResult, setIsLoader, setValue };
-    setResult(null);
     setIsLoader(true);
     fibonacci(props);
     setIsOpen(true);
@@ -41,7 +40,7 @@ export const FibonacciPage: React.FC = () => {
             text="Рассчитать"
             onClick={() => onClick(value)}
             isLoader={isLoader}
-            disabled={value ? false : true}
+            disabled={!value || Number(value) > 19 ? true : false}
           />
         </div>
         <div>
@@ -50,7 +49,7 @@ export const FibonacciPage: React.FC = () => {
               {result?.length
                 ? result.map((item, index) => (
                     <Circle
-                      letter={item}
+                      letter={String(item)}
                       key={index}
                       extraClass={styles.item}
                       index={index}

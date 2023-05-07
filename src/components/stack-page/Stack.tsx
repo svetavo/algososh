@@ -10,17 +10,20 @@ interface IStack<T> {
  
 class Stack<T> implements IStack<T> {
   stack: any[] = [];
+  top: number = -1
   private maxSize = 7;
 
   push = (item: T): void => {
     if (this.getSize() < this.maxSize) {
       this.stack.push(item);
+      this.top++
     }
   };
 
   pop = (): void => {
     if (this.getSize()) {
       this.stack.pop();
+      this.top--
     }
   };
 
@@ -33,6 +36,7 @@ class Stack<T> implements IStack<T> {
 
   clear = (): void => {
     this.stack = [];
+    this.top = -1
   };
 
   getSize = () => this.stack.length;
