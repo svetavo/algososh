@@ -1,0 +1,28 @@
+.input {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 500px;
+  margin-bottom: 100px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  text-align: left;
+}
+
+.result {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.item {
+  margin-right: 10px;
+}
