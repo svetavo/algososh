@@ -14,10 +14,11 @@ export const StringComponent: React.FC = () => {
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const reverse = (value: string) => {
+  const reverse = async (value: string) => {
     setIsLoader(true);
     const newArr = value.split("");
     setArr(newArr);
+    await delay(1000);
     arrReverse(newArr);
     setIsOpen(true);
   };
@@ -31,9 +32,9 @@ export const StringComponent: React.FC = () => {
     const mid = Math.floor(arr.length / 2);
     setCurrentIndex(0);
     for (let i = 0; i < mid; i++) {
+      await delay(1000);
       [arr[i], arr[end - i]] = [arr[end - i], arr[i]];
       setCurrentIndex((i) => i + 1);
-      await delay(1000);
       setArr(arr);
     }
     setIsLoader(false);
@@ -48,12 +49,14 @@ export const StringComponent: React.FC = () => {
             type="text"
             maxLength={11}
             isLimitText={true}
+            data-test="input-tag"
           />
           <Button
             text="Развернуть"
             onClick={() => reverse(value)}
             isLoader={isLoader}
             disabled={value ? false : true}
+            data-test="button-tag"
           />
         </div>
         <div>
@@ -65,6 +68,7 @@ export const StringComponent: React.FC = () => {
                   key={index}
                   extraClass={styles.item}
                   state={circleColor(currentIndex, index, arr)}
+                  data-test="circle-tag"
                 />
               ))}
             </div>

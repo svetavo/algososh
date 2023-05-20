@@ -234,6 +234,7 @@ interface ILetterChanger {
   isChanging: string;
   head: number;
   tail: number;
+  array: IArrEl[];
   currentIndex: number;
 }
 
@@ -243,11 +244,12 @@ export const letterChanger = ({
   isChanging,
   head,
   tail,
+  array,
   currentIndex,
 }: ILetterChanger) => {
   if (isChanging === "headRemove" && index === head) {
     return "";
-  } else if (isChanging === "tailRemove" && index === tail) {
+  } else if (isChanging === "tailRemove" && index === array.length - 1) {
     return "";
   } else if (isChanging === "indexRemove" && index === currentIndex) {
     return "";

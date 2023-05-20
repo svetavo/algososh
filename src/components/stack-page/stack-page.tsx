@@ -48,6 +48,7 @@ export const StackPage: React.FC = () => {
             value={value}
             maxLength={4}
             isLimitText={true}
+            data-test="input-tag"
           />
           <Button
             text="Добавить"
@@ -55,6 +56,7 @@ export const StackPage: React.FC = () => {
             extraClass="mr-5"
             onClick={() => pushStack(pushProps)}
             disabled={!value || stack.isFull() || isDisabled ? true : false}
+            data-test="add-button-tag"
           />
           <Button
             text="Удалить"
@@ -62,12 +64,14 @@ export const StackPage: React.FC = () => {
             extraClass="mr-20"
             onClick={() => popStack(popProps)}
             disabled={!array.length || isDisabled ? true : false}
+            data-test="delete-button-tag"
           />
           <Button
             text="Очистить"
             isLoader={isLoaderClear}
             onClick={() => clearStack(clearProps)}
             disabled={!array.length || isDisabled ? true : false}
+            data-test="clear-button-tag"
           />
         </div>
         <div>

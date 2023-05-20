@@ -89,7 +89,7 @@ export const ListPage: React.FC = () => {
           state={ElementStates.Changing}
         />
       );
-    } else if (isChanging === "tailAdd" && index === tail) {
+    } else if (isChanging === "tailAdd" && index === array.length - 1) {
       return (
         <Circle
           isSmall={true}
@@ -121,7 +121,7 @@ export const ListPage: React.FC = () => {
           state={ElementStates.Changing}
         />
       );
-    } else if (isChanging === "tailRemove" && index === tail) {
+    } else if (isChanging === "tailRemove" && index === array.length - 1) {
       return (
         <Circle
           isSmall={true}
@@ -156,6 +156,7 @@ export const ListPage: React.FC = () => {
               placeholder="Введите значение"
               maxLength={4}
               isLimitText={true}
+              data-test="input-value-tag"
             />
             <Button
               text="Добавить в head"
@@ -163,6 +164,7 @@ export const ListPage: React.FC = () => {
               extraClass="mr-5"
               onClick={() => addHead(addProps)}
               disabled={array.length > 6 || isDisabled || !value ? true : false}
+              data-test="add-head-button-tag"
             />
             <Button
               text="Добавить в tail"
@@ -170,6 +172,7 @@ export const ListPage: React.FC = () => {
               extraClass="mr-5"
               onClick={() => addTail(addProps)}
               disabled={array.length > 6 || isDisabled || !value ? true : false}
+              data-test="add-tail-button-tag"
             />
             <Button
               text="Удалить из head"
@@ -177,12 +180,14 @@ export const ListPage: React.FC = () => {
               extraClass="mr-5"
               onClick={() => removeHead(removeProps)}
               disabled={!array.length || isDisabled ? true : false}
+              data-test="remove-head-button-tag"
             />
             <Button
               text="Удалить из tail"
               isLoader={isLoaderRemoveTail}
               onClick={() => removeTail(removeProps)}
               disabled={!array.length || isDisabled ? true : false}
+              data-test="remove-tail-button-tag"
             />
           </div>
           <div className={styles.input}>
@@ -192,6 +197,7 @@ export const ListPage: React.FC = () => {
               maxLength={4}
               type="number"
               placeholder="Введите индекс"
+              data-test="input-index-tag"
             />
             <Button
               text="Добавить по индексу"
@@ -208,6 +214,7 @@ export const ListPage: React.FC = () => {
                   ? true
                   : false
               }
+              data-test="add-index-button-tag"
             />
             <Button
               text="Удалить по индексу"
@@ -223,13 +230,18 @@ export const ListPage: React.FC = () => {
                   ? true
                   : false
               }
+              data-test="remove-index-button-tag"
             />
           </div>
         </div>
         <div>
           <div className={styles.result}>
             {array.map((item: IArrEl, index) => (
-              <div className={styles.resultCell} key={index}>
+              <div
+                data-test="element-tag"
+                className={styles.resultCell}
+                key={index}
+              >
                 <Circle
                   letter={letterChanger({
                     index,
@@ -237,6 +249,7 @@ export const ListPage: React.FC = () => {
                     isChanging,
                     head,
                     tail,
+                    array,
                     currentIndex,
                   })}
                   key={index}

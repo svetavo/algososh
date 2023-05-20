@@ -13,22 +13,21 @@ export const QueuePage: React.FC = () => {
   const [isLoaderEnqueue, setIsLoaderEnqueue] = useState(false);
   const [isLoaderDequeue, setIsLoaderDequeue] = useState(false);
   const [isLoaderClear, setIsLoaderClear] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(true);
-  const [isDisabledEnqueue, setIsDisabledEnqueue] = useState(true)
-  const [isDisabledDequeue, setIsDisabledDequeue] = useState(true)
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isDisabledEnqueue, setIsDisabledEnqueue] = useState(true);
+  const [isDisabledDequeue, setIsDisabledDequeue] = useState(true);
   const [isDisabledClear, setIsDisabledClear] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [tail, setTail] = useState(-1);
   const [head, setHead] = useState(-1);
 
   //начальный массив пустых элементов
-  const emptyElement: IArrEl = {number: '', state: ElementStates.Default};
+  const emptyElement: IArrEl = { number: "", state: ElementStates.Default };
   const emptyArray: IArrEl[] = Array.apply(null, Array(7)).map(
     () => emptyElement
   );
   const maxLength = 7;
   const [array, setArray] = useState<IArrEl[]>(emptyArray);
-
 
   //пропсы добавление
   const enqueProps = {
@@ -76,10 +75,10 @@ export const QueuePage: React.FC = () => {
     emptyArray,
   };
 
-  const onChange =(e: React.FormEvent<HTMLInputElement>)=> {
-    setValue(e.currentTarget.value)
-    setIsDisabledEnqueue(false)
-  }
+  const onChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setValue(e.currentTarget.value);
+    setIsDisabledEnqueue(false);
+  };
 
   return (
     <SolutionLayout title="Очередь">
@@ -90,26 +89,36 @@ export const QueuePage: React.FC = () => {
             value={value}
             maxLength={4}
             isLimitText={true}
+            data-test="input-tag"
           />
           <Button
             text="Добавить"
             isLoader={isLoaderEnqueue}
             extraClass="mr-5"
             onClick={() => enqueue(enqueProps)}
-            disabled={tail === 7 || isDisabledEnqueue || !value ? true : false}
+            disabled={
+              tail === 7 || isDisabledEnqueue || isDisabled || !value
+                ? true
+                : false
+            }
+            data-test="add-button-tag"
           />
           <Button
             text="Удалить"
             isLoader={isLoaderDequeue}
             extraClass="mr-20"
             onClick={() => dequeue(dequeueProps)}
-            disabled={head > tail || isDisabledDequeue ? true : false}
+            disabled={
+              head > tail || isDisabledDequeue || isDisabled ? true : false
+            }
+            data-test="delete-button-tag"
           />
           <Button
             text="Очистить"
             isLoader={isLoaderClear}
             onClick={() => clearQueue(clearQueueProps)}
-            disabled={isDisabledClear}
+            disabled={isDisabledClear || isDisabled}
+            data-test="clear-button-tag"
           />
         </div>
         <div>

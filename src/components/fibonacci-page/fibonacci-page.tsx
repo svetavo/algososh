@@ -34,13 +34,14 @@ export const FibonacciPage: React.FC = () => {
             placeholder="Введите число"
             max={19}
             isLimitText={true}
-
+            data-test="input-tag"
           />
           <Button
             text="Рассчитать"
             onClick={() => onClick(value)}
             isLoader={isLoader}
             disabled={!value || Number(value) > 19 ? true : false}
+            data-test="button-tag"
           />
         </div>
         <div>

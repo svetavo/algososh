@@ -2,7 +2,7 @@ import { delay } from "./utils";
 import { Dispatch, SetStateAction } from "react";
 import { queue } from "../components/queue-page/Queue";
 import { ElementStates } from "../types/element-states";
-import {IArrEl} from '../utils/utils'
+import { IArrEl } from "../utils/utils";
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
@@ -45,14 +45,15 @@ export const enqueue = async ({
   setIsDisabled!(true);
   const newEl = { number: Number(value), state: ElementStates.Default };
   queue.enqueue(currentIndex!, newEl!, array!);
-  newEl.state = ElementStates.Changing 
+  newEl.state = ElementStates.Changing;
   setArray!(queue.queue);
   await delay(500);
-  newEl.state = ElementStates.Default 
+  newEl.state = ElementStates.Default;
   setHead!(queue.head);
   setTail!(queue.tail);
   setCurrentIndex!(queue.currentIndex);
   setValue!("");
+  setIsDisabled!(false);
   setIsDisabledDequeue!(false);
   setIsDisabledClear!(false);
   setIsLoaderEnqueue!(false);
@@ -83,7 +84,7 @@ export const dequeue = async ({
   setIsLoaderDequeue!(false);
   if (queue.tail === -1 && queue.head === -1) {
     setIsDisabledClear!(true);
-    setIsDisabledDequeue!(true)
+    setIsDisabledDequeue!(true);
   }
 };
 
@@ -109,5 +110,5 @@ export const clearQueue = async ({
   setIsDisabled!(false);
   setIsLoaderClear!(false);
   setIsDisabledClear!(true);
-  setIsDisabledDequeue!(true)
+  setIsDisabledDequeue!(true);
 };
