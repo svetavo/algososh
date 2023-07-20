@@ -9,6 +9,13 @@
 - Очередь
 - Связный список
 
-Технологический стек: React, TypeScript. Приложение покрыто тестами с помощью Jest и Cypress.
+### Технологический стек: 
+React, TypeScript. Приложение покрыто тестами с помощью Jest и Cypress.
 
-Страница приложения: https://algososh-svetavo.netlify.app/
+### Запуск: 
+npm i
+
+npm run start
+
+### Страница приложения: 
+https://algososh-svetavo.netlify.app/
