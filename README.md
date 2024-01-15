@@ -1,11 +1,11 @@
-### Проектная работа. МБОУ АЛГОСОШ им. Фибоначчи
-### Project work: algorithms
+**Проектная работа. МБОУ АЛГОСОШ им. Фибоначчи**
 
-### Страница приложения/Project page: 
+**Project work: algorithms**
+
+**Страница приложения/Project page:**
 https://algososh-svetavo.netlify.app/
 
-
-English below
+_English below_
 
 Работа представляет собой визаулизацию работы наиболее популярных алгоритмов и заточена на анимацию и отображение их поэтапной работы.
 
@@ -16,14 +16,14 @@ English below
 - Очередь
 - Связный список
 
-### Технологический стек: 
+**Технологический стек:**
 React, TypeScript. Приложение покрыто тестами с помощью Jest и Cypress.
 
-### Запуск: 
-npm i
+**Инструкция по запуску приложения:**
 
-npm run start
-
+    npm i
+   
+    npm run start
 
 **ENGLISH**
 
@@ -39,7 +39,9 @@ Step-by-step visualisation of the most popular algorithms
 **Stack**
 React, TypeScript, Jest, Cypress.
 
-**Running**
-npm i
+**Running:**
 
-npm run start
+    npm i
+   
+    npm run start
+
