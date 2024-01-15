@@ -26,6 +26,7 @@ npm run start
 
 
 **ENGLISH**
+
 Step-by-step visualisation of the most popular algorithms 
 
 - string
